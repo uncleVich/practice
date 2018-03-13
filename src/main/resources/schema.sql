@@ -1,23 +1,54 @@
-CREATE TABLE IF NOT EXISTS Person (
-    id         INTEGER  PRIMARY KEY AUTO_INCREMENT,
-    version    INTEGER NOT NULL,
-    first_name VARCHAR(50) NOT NULL,
-    age        INTEGER  NOT NULL
+CREATE TABLE IF NOT EXISTS organization (
+  id        INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  version   INTEGER NOT NULL,
+  name      VARCHAR(255) NOT NULL,
+  full_name VARCHAR(255) NOT NULL,
+  inn       VARCHAR(12) UNIQUE,
+  kpp       VARCHAR(9),
+  address   VARCHAR(255),
+  phone     VARCHAR(16),
+  is_active BOOLEAN
 );
 
-CREATE TABLE IF NOT EXISTS House (
-    id         INTEGER  PRIMARY KEY AUTO_INCREMENT,
-    version    INTEGER NOT NULL,
-    address    VARCHAR(50) NOT NULL
+CREATE TABLE IF NOT EXISTS office (
+  id        INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  version   INTEGER NOT NULL,
+  address   VARCHAR(50) NOT NULL,
+  name      VARCHAR(255) NOT NULL,
+  phone     VARCHAR(16),
+  is_active       BOOLEAN,
+  organization_id INTEGER NOT NULL,
 );
 
-CREATE TABLE IF NOT EXISTS Person_House (
-    person_id   INTEGER  NOT NULL,
-    house_id    INTEGER  NOT NULL
+CREATE TABLE IF NOT EXISTS user (
+  id          INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT,
+  version     INTEGER NOT NULL,
+  first_name  VARCHAR(50) NOT NULL,
+  second_name VARCHAR(50) NOT NULL,
+  middle_name VARCHAR(50) NOT NULL,
+  phone       VARCHAR(16),
+  position    VARCHAR(255),
+  is_identified BOOLEAN,
+  doc_id      INT NOT NULL,
+  country_id  INT NOT NULL,
+  office_id   INT NOT NULL
 );
 
-CREATE INDEX IX_Person_House_Id ON Person_House (house_id);
-ALTER TABLE Person_House ADD FOREIGN KEY (house_id) REFERENCES House(id);
+CREATE TABLE IF NOT EXISTS document (
+  id          INTEGER PRIMARY KEY AUTO_INCREMENT,
+  version     INTEGER NOT NULL,
+  name        VARCHAR(255) NOT NULL,
+  code        CHAR(2) NOT NULL
+);
 
-CREATE INDEX IX_House_Person_Id ON Person_House (person_id);
-ALTER TABLE Person_House ADD FOREIGN KEY (person_id) REFERENCES Person(id);
+CREATE TABLE IF NOT EXISTS country (
+  id          INTEGER PRIMARY KEY AUTO_INCREMENT,
+  version     INTEGER NOT NULL,
+  name        VARCHAR(255) NOT NULL,
+  code        CHAR(3) NOT NULL
+);
+
+ALTER TABLE office ADD FOREIGN KEY (organization_id) REFERENCES organization(id);
+ALTER TABLE user ADD FOREIGN KEY (office_id) REFERENCES office(id);
+ALTER TABLE user ADD FOREIGN KEY (doc_id) REFERENCES document (id);
+ALTER TABLE user ADD FOREIGN KEY (country_id) REFERENCES country (id);

@@ -1,4 +1,4 @@
-package ru.bellintegrator.practice.service;
+package ru.practice.service;
 
 import org.junit.Test;
 
